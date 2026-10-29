@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Thread{% endblock title %}</title>
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+  <style>
+    body { font-family: "Malgun Gothic", sans-serif; }
+    main { min-height: 70vh; }
+    .form-panel { max-width: 720px; margin: 0 auto; }
+    .description, h1, .card-title { overflow-wrap: anywhere; }
+    .errorlist { margin-bottom: 0; padding-left: 1.25rem; }
+    .form-text ul { padding-left: 1.25rem; }
+  </style>
+</head>
+<body class="bg-body-tertiary">
+  <a class="visually-hidden-focusable position-absolute bg-white p-2" href="#main">본문 바로가기</a>
+  <header>
+    <nav class="navbar navbar-expand-md bg-white border-bottom" aria-label="주 메뉴">
+      <div class="container py-2">
+        <a class="navbar-brand fw-bold fs-4" href="{% url 'books:index' %}">Thread</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="메뉴 열기">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <div class="navbar-nav ms-auto align-items-md-center gap-md-2">
+            <a class="nav-link" href="{% url 'books:index' %}">도서 목록</a>
+            {% if user.is_authenticated %}
+              <a class="nav-link" href="{% url 'books:create' %}">도서 등록</a>
+              <a class="nav-link" href="{% url 'accounts:profile' user.username %}">내 프로필</a>
+              <form action="{% url 'accounts:logout' %}" method="POST" class="m-0">
+                {% csrf_token %}
+                <button class="nav-link bg-transparent border-0" type="submit">로그아웃</button>
+              </form>
+            {% else %}
+              <a class="nav-link" href="{% url 'accounts:login' %}">로그인</a>
+              <a class="btn btn-primary btn-sm my-2 my-md-0" href="{% url 'accounts:signup' %}">회원가입</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container py-5">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}" role="status">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock content %}
+  </main>
+
+  <footer class="border-top bg-white py-4">
+    <div class="container small text-body-secondary">Thread · 좋은 책을 발견하고 함께 나누는 공간</div>
+  </footer>
+  <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

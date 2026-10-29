@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ person.username }}님의 프로필 · Thread{% endblock title %}
+{% block content %}
+  <section class="card shadow-sm mb-4">
+    <div class="card-body p-4 p-md-5">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+          <p class="text-primary small fw-semibold mb-2">READER PROFILE</p>
+          <h1 class="h2 fw-bold mb-2">{{ person.username }}님의 프로필</h1>
+          <p class="text-body-secondary mb-0">독서 습관과 좋아하는 장르를 기록하는 공간입니다.</p>
+        </div>
+        {% if user == person %}<a class="btn btn-primary" href="{% url 'accounts:update' %}">회원정보 수정</a>{% endif %}
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h2 class="h5 fw-bold mb-3">기본 정보</h2>
+          <dl class="row gy-2 mb-0">
+            <dt class="col-4 text-body-secondary fw-normal">아이디</dt><dd class="col-8 text-break">{{ person.username }}</dd>
+            <dt class="col-4 text-body-secondary fw-normal">이메일</dt><dd class="col-8 text-break">{{ person.email|default:'미등록' }}</dd>
+            <dt class="col-4 text-body-secondary fw-normal">이름</dt><dd class="col-8">{% if person.last_name or person.first_name %}{{ person.last_name }}{{ person.first_name }}{% else %}미등록{% endif %}</dd>
+            <dt class="col-4 text-body-secondary fw-normal">성별</dt><dd class="col-8">{{ person.get_gender_display|default:'미등록' }}</dd>
+            <dt class="col-4 text-body-secondary fw-normal">나이</dt><dd class="col-8">{% if person.age %}{{ person.age }}세{% else %}미등록{% endif %}</dd>
+          </dl>
+        </div>
+        <div class="col-md-6">
+          <h2 class="h5 fw-bold mb-3">독서 기록</h2>
+          <div class="row g-3 mb-4">
+            <div class="col-6"><div class="rounded bg-body-tertiary p-3 h-100"><p class="small text-body-secondary mb-1">주간 평균 독서 시간</p><strong class="fs-4">{{ person.weekly_reading_hours|default_if_none:'—' }}</strong><span class="small ms-1">시간</span></div></div>
+            <div class="col-6"><div class="rounded bg-body-tertiary p-3 h-100"><p class="small text-body-secondary mb-1">연간 독서량</p><strong class="fs-4">{{ person.annual_reading_count|default_if_none:'—' }}</strong><span class="small ms-1">권</span></div></div>
+          </div>
+          <h3 class="h6 fw-bold">관심 장르</h3>
+          <div class="d-flex flex-wrap gap-2 mt-3">{% for genre in person.genre_list %}<span class="badge rounded-pill text-bg-primary px-3 py-2">{{ genre }}</span>{% empty %}<p class="small text-body-secondary mb-0">아직 선택한 장르가 없습니다.</p>{% endfor %}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% if user == person %}
+    <section class="card border-danger-subtle mb-4"><div class="card-body p-4">
+      <h2 class="h5 fw-bold">계정 관리</h2>
+      <p class="text-body-secondary">비밀번호를 변경하거나 회원탈퇴를 진행할 수 있습니다.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-secondary" href="{% url 'accounts:change_password' %}">비밀번호 변경</a>
+        <form action="{% url 'accounts:delete' %}" method="POST" onsubmit="return confirm('정말 탈퇴할까요? 삭제된 계정은 복구할 수 없습니다.');">{% csrf_token %}<button class="btn btn-outline-danger" type="submit">회원탈퇴</button></form>
+      </div>
+    </div></section>
+  {% endif %}
+  <a class="btn btn-outline-secondary" href="{% url 'books:index' %}">도서 목록으로</a>
+{% endblock content %}

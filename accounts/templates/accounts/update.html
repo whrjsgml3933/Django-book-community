@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}회원정보 수정 · Thread{% endblock title %}
+{% block content %}
+  <section class="form-panel">
+    <h1 class="h2 fw-bold">회원정보 수정</h1>
+    <p class="text-body-secondary mb-4">계정 정보와 독서 취향을 수정해 주세요. 추가 독서 정보는 선택 항목입니다.</p>
+    <form class="card card-body p-4 shadow-sm" method="POST">
+      {% csrf_token %}
+      {% include "accounts/_fields.html" %}
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button class="btn btn-primary" type="submit">변경사항 저장</button>
+        <a class="btn btn-outline-secondary" href="{% url 'accounts:profile' user.username %}">내 프로필</a>
+      </div>
+    </form>
+  </section>
+{% endblock content %}

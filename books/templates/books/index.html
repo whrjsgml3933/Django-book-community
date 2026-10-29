@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}도서 목록 · Thread{% endblock title %}
+{% block content %}
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h2 fw-bold mb-2">우리의 도서 목록</h1>
+      <p class="text-body-secondary mb-0">마음에 드는 책을 발견하고, 좋아하는 책을 소개해 보세요.</p>
+    </div>
+    {% if user.is_authenticated %}
+      <a class="btn btn-primary" href="{% url 'books:create' %}">+ 도서 등록</a>
+    {% endif %}
+  </div>
+  {% if books %}
+    <p class="text-body-secondary small">총 {{ books|length }}권</p>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+      {% for book in books %}
+        <div class="col">
+          <article class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column p-4">
+              <span class="badge text-bg-warning align-self-start mb-3">평점 {{ book.star_avg|floatformat:2 }}</span>
+              <h2 class="card-title h5 fw-bold"><a class="link-dark text-decoration-none" href="{% url 'books:detail' book.pk %}">{{ book.title }}</a></h2>
+              <p class="card-subtitle text-body-secondary small mt-1 mb-3">{{ book.author }} 지음</p>
+              <p class="card-text text-break">{{ book.content|truncatechars:90 }}</p>
+              <a class="btn btn-outline-primary align-self-start mt-auto" href="{% url 'books:detail' book.pk %}">상세 보기</a>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <section class="card text-center border-dashed">
+      <div class="card-body py-5 px-3">
+        <h2 class="h5">아직 등록된 도서가 없어요.</h2>
+        <p class="text-body-secondary">좋아하는 책으로 목록의 첫 장을 채워 주세요.</p>
+        {% if user.is_authenticated %}
+          <a class="btn btn-primary" href="{% url 'books:create' %}">첫 도서 등록하기</a>
+        {% else %}
+          <a class="btn btn-primary" href="{% url 'accounts:login' %}">로그인하고 시작하기</a>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock content %}

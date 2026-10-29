@@ -1,0 +1,32 @@
+{% load form_tags %}
+{% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}
+  {% if field.is_hidden %}
+    {{ field }}
+    {% if field.errors %}<div class="alert alert-danger" role="alert">{{ field.errors }}</div>{% endif %}
+  {% elif field|is_checkbox_group %}
+    <fieldset class="mb-4{% if field.errors %} has-error{% endif %}">
+      <legend class="form-label fs-6 fw-semibold">{{ field.label }}</legend>
+      <div class="d-flex flex-wrap gap-3">
+        {% for choice in field %}
+          <div class="form-check">{{ choice.tag }}<label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label></div>
+        {% endfor %}
+      </div>
+      {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+      {% if field.errors %}<div class="invalid-feedback d-block" role="alert">{{ field.errors }}</div>{% endif %}
+    </fieldset>
+  {% elif field|is_checkbox %}
+    <div class="mb-4">
+      <div class="form-check">{{ field|bootstrap_field }}<label class="form-check-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+      {% if field.help_text %}<div class="form-text" id="{{ field.auto_id }}_help">{{ field.help_text }}</div>{% endif %}
+      {% if field.errors %}<div class="invalid-feedback d-block" id="{{ field.auto_id }}_errors" role="alert">{{ field.errors }}</div>{% endif %}
+    </div>
+  {% else %}
+    <div class="mb-4{% if field.errors %} has-error{% endif %}">
+      <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="text-danger"> *</span>{% endif %}</label>
+      {{ field|bootstrap_field }}
+      {% if field.help_text %}<div class="form-text" id="{{ field.auto_id }}_help">{{ field.help_text }}</div>{% endif %}
+      {% if field.errors %}<div class="invalid-feedback d-block" id="{{ field.auto_id }}_errors" role="alert">{{ field.errors }}</div>{% endif %}
+    </div>
+  {% endif %}
+{% endfor %}

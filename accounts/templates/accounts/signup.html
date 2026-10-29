@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}회원가입 · Thread{% endblock title %}
+
+{% block content %}
+  <section class="form-panel">
+    <h1 class="h2 fw-bold">회원가입</h1>
+    <p class="text-body-secondary mb-4">계정을 만들고 나만의 독서 이야기를 시작하세요.</p>
+
+    <form class="card card-body p-4 shadow-sm" method="POST">
+      {% csrf_token %}
+      {% include "accounts/_fields.html" %}
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button class="btn btn-primary" type="submit">가입하기</button>
+        <a class="btn btn-outline-secondary" href="{% url 'books:index' %}">취소</a>
+      </div>
+    </form>
+
+    <p class="small text-body-secondary mt-3">이미 계정이 있나요? <a href="{% url 'accounts:login' %}">로그인</a></p>
+  </section>
+{% endblock content %}
